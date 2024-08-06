@@ -31,8 +31,16 @@
     src: ansible.cfg.j2
     dest: "{{ ee_builder_dir | default(build_dir.path) }}/ansible.cfg"
     mode: "0644"
-  when: ee_pull_collections_from_hub
+  when: ee_pull_collections_from_hub and not ansiblecfg_override
 
+- name: If ansiblecfg_override is set, write content to file
+  ansible.builtin.copy:
+    content: "{{ ansiblecfg_override }}"
+    dest: "{{ ee_builder_dir | default(build_dir.path) }}/ansible.cfg"
+    mode: 0644
+  when: 
+    - ansiblecfg_override is defined
+  
 - name: Create EE definition file
   ansible.builtin.template:
     src: execution_environment.yml.j2

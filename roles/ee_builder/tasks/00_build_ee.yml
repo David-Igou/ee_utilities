@@ -26,12 +26,12 @@
     - __execution_environment_definition.build_items is defined
     - __execution_environment_definition.build_items|length
 
-- name: Create ansible.cfg file if requested.
+- name: Create ansible.cfg file if requested and not overridden.
   ansible.builtin.template:
     src: ansible.cfg.j2
     dest: "{{ ee_builder_dir | default(build_dir.path) }}/ansible.cfg"
     mode: "0644"
-  when: ee_pull_collections_from_hub and not ansiblecfg_override
+  when: ee_pull_collections_from_hub and ansiblecfg_override is undefined
 
 - name: If ansiblecfg_override is set, write content to file
   ansible.builtin.copy:
